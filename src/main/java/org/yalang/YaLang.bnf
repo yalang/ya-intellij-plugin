@@ -1,0 +1,168 @@
+{
+  parserClass="org.yalang.parser.YaLangParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="YaLang"
+  psiImplClassSuffix="Impl"
+  psiPackage="org.yalang.psi"
+  psiImplPackage="org.yalang.psi.impl"
+
+  elementTypeHolderClass="org.yalang.psi.YaLangTypes"
+  elementTypeClass="org.yalang.psi.YaLangElementType"
+  tokenTypeClass="org.yalang.psi.YaLangTokenType"
+
+  psiImplUtilClass="org.yalang.psi.impl.YaLangPsiImplUtil"
+}
+
+yaLangFile ::= item_*
+
+private item_ ::= (property|COMMENT|CRLF|single_input|file_input|eval_input)
+
+property ::= (KEY? SEPARATOR VALUE?) | KEY {methods=[getKey getValue]}
+
+// Start symbols for the grammar:
+//       single_input is a single interactive statement;
+//       file_input is a module or sequence of commands read from an input file;
+//       eval_input is the input for the eval() functions.
+// NB: compound_stmt in single_input is followed by extra NEWLINE!
+single_input ::= NEWLINE | simple_stmt | compound_stmt NEWLINE
+file_input ::= (NEWLINE | stmt)* ENDMARKER
+eval_input ::= testlist NEWLINE* ENDMARKER
+
+decorator ::= '@' dotted_name [ '(' [arglist] ')' ] NEWLINE
+decorators ::= decorator+
+decorated ::= decorators (classdef | funcdef | async_funcdef)
+
+async_funcdef ::= 'async' funcdef
+funcdef ::= 'وظيفة' NAME parameters ['->' test] ':' suite
+
+parameters ::= '(' [typedargslist] ')'
+typedargslist ::= (tfpdef ['=' test] (',' tfpdef ['=' test])* [',' [
+        '*' [tfpdef] (',' tfpdef ['=' test])* [',' ['**' tfpdef [',']]]
+      | '**' tfpdef [',']]]
+  | '*' [tfpdef] (',' tfpdef ['=' test])* [',' ['**' tfpdef [',']]]
+  | '**' tfpdef [','])
+tfpdef ::= NAME [':' test]
+varargslist ::= (vfpdef ['=' test] (',' vfpdef ['=' test])* [',' [
+        '*' [vfpdef] (',' vfpdef ['=' test])* [',' ['**' vfpdef [',']]]
+      | '**' vfpdef [',']]]
+  | '*' [vfpdef] (',' vfpdef ['=' test])* [',' ['**' vfpdef [',']]]
+  | '**' vfpdef [',']
+)
+vfpdef ::= NAME
+
+stmt ::= simple_stmt | compound_stmt
+simple_stmt ::= small_stmt ('؛' small_stmt)* ['؛'] NEWLINE
+small_stmt ::= (expr_stmt | del_stmt | pass_stmt | flow_stmt |
+             import_stmt | global_stmt | nonlocal_stmt | assert_stmt)
+expr_stmt ::= testlist_star_expr (annassign | augassign (yield_expr|testlist) |
+                     ('=' (yield_expr|testlist_star_expr))*)
+annassign ::= ':' test ['=' test]
+testlist_star_expr ::= (test|star_expr) (',' (test|star_expr))* [',']
+augassign ::= ('+=' | '-=' | '*=' | '@=' | '/=' | '٪=' | '&=' | '|=' | '^=' |
+            '<<=' | '>>=' | '**=' | '//=')
+// For normal and annotated assignments, additional restrictions enforced by the interpreter
+del_stmt ::= 'حذف' exprlist
+pass_stmt ::= 'مرر'
+flow_stmt ::= break_stmt | continue_stmt | return_stmt | raise_stmt | yield_stmt
+break_stmt ::= 'اكسر'
+continue_stmt ::= 'استمر'
+return_stmt ::= 'إرجع' [testlist]
+yield_stmt ::= yield_expr
+raise_stmt ::= 'رفع' [test ['من' test]]
+import_stmt ::= import_name | import_from
+import_name ::= 'استيراد' dotted_as_names
+// note below ::= the ('.' | '...') is necessary because '...' is tokenized as ELLIPSIS
+import_from ::= ('من' (('.' | '...')* dotted_name | ('.' | '...')+)
+              'استيراد' ('*' | '(' import_as_names ')' | import_as_names))
+import_as_name ::= NAME ['as' NAME]
+dotted_as_name ::= dotted_name ['as' NAME]
+import_as_names ::= import_as_name (',' import_as_name)* [',']
+dotted_as_names ::= dotted_as_name (',' dotted_as_name)*
+dotted_name ::= NAME ('.' NAME)*
+global_stmt ::= 'عالمي' NAME (',' NAME)*
+nonlocal_stmt ::= 'غيرمحلي' NAME (',' NAME)*
+assert_stmt ::= 'أكد' test [',' test]
+
+compound_stmt ::= if_stmt | while_stmt | for_stmt | try_stmt | with_stmt | funcdef | classdef | decorated | async_stmt
+async_stmt ::= 'غيرمتزامن' (funcdef | with_stmt | for_stmt)
+if_stmt ::= 'لو' test ':' suite ('ولو' test ':' suite)* ['آخر' ':' suite]
+while_stmt ::= 'بينما' test ':' suite ['آخر' ':' suite]
+for_stmt ::= 'لأن' exprlist 'في' testlist ':' suite ['آخر' ':' suite]
+try_stmt ::= ('حاول' ':' suite
+           ((except_clause ':' suite)+
+            ['آخر' ':' suite]
+            ['أخيرا' ':' suite] |
+           'أخيرا' ':' suite))
+with_stmt ::= 'مع' with_item (',' with_item)*  ':' suite
+with_item ::= test ['مثل' expr]
+// NB compile.c makes sure that the default except clause is last
+except_clause ::= 'إلا' [test ['مثل' NAME]]
+suite ::= simple_stmt | NEWLINE INDENT stmt+ DEDENT
+
+test ::= or_test ['لو' or_test 'آخر' test] | lambdef
+test_nocond ::= or_test | lambdef_nocond
+lambdef ::= 'امدا' [varargslist] ':' test
+lambdef_nocond ::= 'امدا' [varargslist] ':' test_nocond
+or_test ::= and_test ('أو' and_test)*
+and_test ::= not_test ('و' not_test)*
+not_test ::= 'لا' not_test | comparison
+comparison ::= expr (comp_op expr)*
+// <> isn't actually a valid comparison operator in Python. It's here for the
+// sake of a __future__ import described in PEP 401 (which really works :-)
+comp_op ::= '<'|'>'|'=='|'>='|'<='|'<>'|'!='|'in'|'not' 'in'|'is'|'is' 'not'
+star_expr ::= '*' expr
+expr ::= xor_expr ('|' xor_expr)*
+xor_expr ::= and_expr ('^' and_expr)*
+and_expr ::= shift_expr ('&' shift_expr)*
+shift_expr ::= arith_expr (('<<'|'>>') arith_expr)*
+arith_expr ::= term (('+'|'-') term)*
+term ::= factor (('*'|'@'|'/'|'٪'|'//') factor)*
+factor ::= ('+'|'-'|'~') factor | power
+power ::= atom_expr ['**' factor]
+atom_expr ::= ['ترقب'] atom trailer*
+atom ::= ('(' [yield_expr|testlist_comp] ')' |
+       '[' [testlist_comp] ']' |
+       '{' [dictorsetmaker] '}' |
+       NAME | NUMBER | STRING+ | '...' | 'لااحد' | 'صحيح' | 'زائف')
+testlist_comp ::= (test|star_expr) ( comp_for | (',' (test|star_expr))* [','] )
+trailer ::= '(' [arglist] ')' | '[' subscriptlist ']' | '.' NAME
+subscriptlist ::= subscript (',' subscript)* [',']
+subscript ::= test | [test] ':' [test] [sliceop]
+sliceop ::= ':' [test]
+exprlist ::= (expr|star_expr) (',' (expr|star_expr))* [',']
+testlist ::= test (',' test)* [',']
+dictorsetmaker ::= ( ((test ':' test | '**' expr)
+                   (comp_for | (',' (test ':' test | '**' expr))* [','])) |
+                  ((test | star_expr)
+                   (comp_for | (',' (test | star_expr))* [','])) )
+
+classdef ::= 'صنف' NAME ['(' [arglist] ')'] ':' suite
+
+arglist ::= argument (',' argument)*  [',']
+
+// The reason that keywords are test nodes instead of NAME is that using NAME
+// results in an ambiguity. ast.c makes sure it's a NAME.
+// "test '=' test" is really "keyword '=' test", but we have no such token.
+// These need to be in a single rule to avoid grammar that is ambiguous
+// to our LL(1) parser. Even though 'test' includes '*expr' in star_expr,
+// we explicitly match '*' here, too, to give it proper precedence.
+// Illegal combinations and orderings are blocked in ast.c:
+// multiple (test comp_for) arguments are blocked; keyword unpackings
+// that precede iterable unpackings are blocked; etc.
+argument ::= ( test [comp_for] |
+            test '=' test |
+            '**' test |
+            '*' test )
+
+comp_iter ::= comp_for | comp_if
+sync_comp_for ::= 'لأن' exprlist 'في' or_test [comp_iter]
+comp_for ::= ['غيرمتزامن'] sync_comp_for
+comp_if ::= 'لو' test_nocond [comp_iter]
+
+// not used in grammar, but may appear in "node" passed from Parser to Compiler
+encoding_decl ::= NAME
+
+yield_expr ::= 'محصول' [yield_arg]
+yield_arg ::= 'من' test | testlist

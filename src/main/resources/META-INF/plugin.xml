@@ -1,0 +1,27 @@
+<idea-plugin>
+    <id>org.yalang.yalang-plugin</id>
+    <name>YaLang</name>
+    <vendor email="team@yalang.org" url="http://www.yalang.org">YaLang</vendor>
+
+    <description><![CDATA[
+    Enter short description for your plugin here.<br>
+    <em>most HTML tags may be used</em>
+    ]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.lang</depends>
+
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <fileTypeFactory implementation="org.yalang.YaLangFileTypeFactory"/>
+        <lang.parserDefinition language="YaLang" implementationClass="org.yalang.YaLangParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="YaLang" implementationClass="org.yalang.YaLangSyntaxHighlighterFactory"/>
+        <colorSettingsPage implementation="org.yalang.YaLangColorSettingsPage"/>
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>
