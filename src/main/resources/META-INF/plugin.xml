@@ -19,6 +19,7 @@
         <lang.parserDefinition language="YaLang" implementationClass="org.yalang.YaLangParserDefinition"/>
         <lang.syntaxHighlighterFactory language="YaLang" implementationClass="org.yalang.YaLangSyntaxHighlighterFactory"/>
         <colorSettingsPage implementation="org.yalang.YaLangColorSettingsPage"/>
+        <annotator language="YaLang" implementationClass="org.yalang.YaLangAnnotator"/>
     </extensions>
 
     <actions>
