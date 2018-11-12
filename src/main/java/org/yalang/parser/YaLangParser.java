@@ -325,14 +325,14 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "and_expr_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "&");
+    r = consumeToken(b, AND);
     r = r && shift_expr(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // not_test ('و' not_test)*
+  // not_test (AND_KEYWORD not_test)*
   public static boolean and_test(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "and_test")) return false;
     boolean r;
@@ -343,7 +343,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ('و' not_test)*
+  // (AND_KEYWORD not_test)*
   private static boolean and_test_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "and_test_1")) return false;
     while (true) {
@@ -354,12 +354,12 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // 'و' not_test
+  // AND_KEYWORD not_test
   private static boolean and_test_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "and_test_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "و");
+    r = consumeToken(b, AND_KEYWORD);
     r = r && not_test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -369,12 +369,13 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   // ':' test ['=' test]
   public static boolean annassign(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annassign")) return false;
+    if (!nextTokenIs(b, COLON)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, ANNASSIGN, "<annassign>");
-    r = consumeToken(b, ":");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COLON);
     r = r && test(b, l + 1);
     r = r && annassign_2(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, ANNASSIGN, r);
     return r;
   }
 
@@ -390,7 +391,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "annassign_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "=");
+    r = consumeToken(b, EQ);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -479,7 +480,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = test(b, l + 1);
-    r = r && consumeToken(b, "=");
+    r = r && consumeToken(b, EQ);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -490,7 +491,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "argument_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "**");
+    r = consumeToken(b, EXP);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -501,7 +502,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "argument_3")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "*");
+    r = consumeToken(b, MULT);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -546,22 +547,23 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "arith_expr_1_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "+");
-    if (!r) r = consumeToken(b, "-");
+    r = consumeToken(b, PLUS);
+    if (!r) r = consumeToken(b, MINUS);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'أكد' test [',' test]
+  // ASSERT_KEYWORD test [',' test]
   public static boolean assert_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "assert_stmt")) return false;
+    if (!nextTokenIs(b, ASSERT_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, ASSERT_STMT, "<assert stmt>");
-    r = consumeToken(b, "أكد");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, ASSERT_KEYWORD);
     r = r && test(b, l + 1);
     r = r && assert_stmt_2(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, ASSERT_STMT, r);
     return r;
   }
 
@@ -584,26 +586,28 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'async' funcdef
+  // ASYNC_KEYWORD funcdef
   public static boolean async_funcdef(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "async_funcdef")) return false;
+    if (!nextTokenIs(b, ASYNC_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, ASYNC_FUNCDEF, "<async funcdef>");
-    r = consumeToken(b, "async");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, ASYNC_KEYWORD);
     r = r && funcdef(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, ASYNC_FUNCDEF, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'async' (funcdef | with_stmt | for_stmt)
+  // ASYNC_KEYWORD (funcdef | with_stmt | for_stmt)
   public static boolean async_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "async_stmt")) return false;
+    if (!nextTokenIs(b, ASYNC_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, ASYNC_STMT, "<async stmt>");
-    r = consumeToken(b, "async");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, ASYNC_KEYWORD);
     r = r && async_stmt_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, ASYNC_STMT, r);
     return r;
   }
 
@@ -621,7 +625,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   // '(' [yield_expr|testlist_comp] ')' |
   //        '[' [testlist_comp] ']' |
   //        '{' [dictorsetmaker] '}' |
-  //        NAME | NUMBER | STRING+ | '...' | 'لااحد' | 'صحيح' | 'زائف'
+  //        NAME | NUMBER | STRING+ | '...' | NONE_KEYWORD | TRUE_KEYWORD | FALSE_KEYWORD
   public static boolean atom(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "atom")) return false;
     boolean r;
@@ -633,9 +637,9 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, NUMBER);
     if (!r) r = atom_5(b, l + 1);
     if (!r) r = consumeToken(b, "...");
-    if (!r) r = consumeToken(b, "لااحد");
-    if (!r) r = consumeToken(b, "صحيح");
-    if (!r) r = consumeToken(b, "زائف");
+    if (!r) r = consumeToken(b, NONE_KEYWORD);
+    if (!r) r = consumeToken(b, TRUE_KEYWORD);
+    if (!r) r = consumeToken(b, FALSE_KEYWORD);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -645,9 +649,9 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "atom_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "(");
+    r = consumeToken(b, LPAR);
     r = r && atom_0_1(b, l + 1);
-    r = r && consumeToken(b, ")");
+    r = r && consumeToken(b, RPAR);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -673,9 +677,9 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "atom_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "[");
+    r = consumeToken(b, LBRACKET);
     r = r && atom_1_1(b, l + 1);
-    r = r && consumeToken(b, "]");
+    r = r && consumeToken(b, RBRACKET);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -692,9 +696,9 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "atom_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "{");
+    r = consumeToken(b, LBRACE);
     r = r && atom_2_1(b, l + 1);
-    r = r && consumeToken(b, "}");
+    r = r && consumeToken(b, RBRACE);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -722,7 +726,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ['await'] atom trailer*
+  // [AWAIT_KEYWORD] atom trailer*
   public static boolean atom_expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "atom_expr")) return false;
     boolean r;
@@ -734,10 +738,10 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ['await']
+  // [AWAIT_KEYWORD]
   private static boolean atom_expr_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "atom_expr_0")) return false;
-    consumeToken(b, "await");
+    consumeToken(b, AWAIT_KEYWORD);
     return true;
   }
 
@@ -753,52 +757,53 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '+=' | '-=' | '*=' | '@=' | '/=' | '%=' | '&=' | '|=' | '^=' |
+  // '+=' | '-=' | '*=' | '@=' | '/=' | '٪=' | '&=' | '|=' | '^=' |
   //             '<<=' | '>>=' | '**=' | '//='
   public static boolean augassign(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "augassign")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, AUGASSIGN, "<augassign>");
-    r = consumeToken(b, "+=");
-    if (!r) r = consumeToken(b, "-=");
-    if (!r) r = consumeToken(b, "*=");
-    if (!r) r = consumeToken(b, "@=");
-    if (!r) r = consumeToken(b, "/=");
-    if (!r) r = consumeToken(b, "%=");
-    if (!r) r = consumeToken(b, "&=");
-    if (!r) r = consumeToken(b, "|=");
-    if (!r) r = consumeToken(b, "^=");
-    if (!r) r = consumeToken(b, "<<=");
-    if (!r) r = consumeToken(b, ">>=");
-    if (!r) r = consumeToken(b, "**=");
-    if (!r) r = consumeToken(b, "//=");
+    r = consumeToken(b, PLUSEQ);
+    if (!r) r = consumeToken(b, MINUSEQ);
+    if (!r) r = consumeToken(b, MULTEQ);
+    if (!r) r = consumeToken(b, ATEQ);
+    if (!r) r = consumeToken(b, DIVEQ);
+    if (!r) r = consumeToken(b, PERCEQ);
+    if (!r) r = consumeToken(b, ANDEQ);
+    if (!r) r = consumeToken(b, OREQ);
+    if (!r) r = consumeToken(b, XOREQ);
+    if (!r) r = consumeToken(b, LTLTEQ);
+    if (!r) r = consumeToken(b, GTGTEQ);
+    if (!r) r = consumeToken(b, EXPEQ);
+    if (!r) r = consumeToken(b, FLOORDIVEQ);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // 'اكسر'
+  // BREAK_KEYWORD
   public static boolean break_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "break_stmt")) return false;
+    if (!nextTokenIs(b, BREAK_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, BREAK_STMT, "<break stmt>");
-    r = consumeToken(b, "اكسر");
-    exit_section_(b, l, m, r, false, null);
+    Marker m = enter_section_(b);
+    r = consumeToken(b, BREAK_KEYWORD);
+    exit_section_(b, m, BREAK_STMT, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'صنف' NAME ['(' [arglist] ')'] ':' suite
+  // CLASS_KEYWORD NAME ['(' [arglist] ')'] ':' suite
   public static boolean classdef(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "classdef")) return false;
+    if (!nextTokenIs(b, CLASS_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, CLASSDEF, "<classdef>");
-    r = consumeToken(b, "صنف");
-    r = r && consumeToken(b, NAME);
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, CLASS_KEYWORD, NAME);
     r = r && classdef_2(b, l + 1);
-    r = r && consumeToken(b, ":");
+    r = r && consumeToken(b, COLON);
     r = r && suite(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, CLASSDEF, r);
     return r;
   }
 
@@ -814,9 +819,9 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "classdef_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "(");
+    r = consumeToken(b, LPAR);
     r = r && classdef_2_0_1(b, l + 1);
-    r = r && consumeToken(b, ")");
+    r = r && consumeToken(b, RPAR);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -829,9 +834,10 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ['async'] sync_comp_for
+  // [ASYNC_KEYWORD] sync_comp_for
   public static boolean comp_for(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "comp_for")) return false;
+    if (!nextTokenIs(b, "<comp for>", ASYNC_KEYWORD, FOR_KEYWORD)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, COMP_FOR, "<comp for>");
     r = comp_for_0(b, l + 1);
@@ -840,23 +846,24 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ['async']
+  // [ASYNC_KEYWORD]
   private static boolean comp_for_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "comp_for_0")) return false;
-    consumeToken(b, "async");
+    consumeToken(b, ASYNC_KEYWORD);
     return true;
   }
 
   /* ********************************************************** */
-  // 'لو' test_nocond [comp_iter]
+  // IF_KEYWORD test_nocond [comp_iter]
   public static boolean comp_if(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "comp_if")) return false;
+    if (!nextTokenIs(b, IF_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, COMP_IF, "<comp if>");
-    r = consumeToken(b, "لو");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IF_KEYWORD);
     r = r && test_nocond(b, l + 1);
     r = r && comp_if_2(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, COMP_IF, r);
     return r;
   }
 
@@ -880,45 +887,23 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '<'|'>'|'=='|'>='|'<='|'<>'|'!='|'in'|'not' 'in'|'is'|'is' 'not'
+  // '<'|'>'|'=='|'>='|'<='|'<>'|'!='|IN_KEYWORD|NOT_KEYWORD IN_KEYWORD|IS_KEYWORD|IS_KEYWORD NOT_KEYWORD
   public static boolean comp_op(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "comp_op")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, COMP_OP, "<comp op>");
-    r = consumeToken(b, "<");
-    if (!r) r = consumeToken(b, ">");
-    if (!r) r = consumeToken(b, "==");
-    if (!r) r = consumeToken(b, ">=");
-    if (!r) r = consumeToken(b, "<=");
-    if (!r) r = consumeToken(b, "<>");
-    if (!r) r = consumeToken(b, "!=");
-    if (!r) r = consumeToken(b, "in");
-    if (!r) r = comp_op_8(b, l + 1);
-    if (!r) r = consumeToken(b, "is");
-    if (!r) r = comp_op_10(b, l + 1);
+    r = consumeToken(b, LT);
+    if (!r) r = consumeToken(b, GT);
+    if (!r) r = consumeToken(b, EQEQ);
+    if (!r) r = consumeToken(b, GE);
+    if (!r) r = consumeToken(b, LE);
+    if (!r) r = consumeToken(b, NE_OLD);
+    if (!r) r = consumeToken(b, NE);
+    if (!r) r = consumeToken(b, IN_KEYWORD);
+    if (!r) r = parseTokens(b, 0, NOT_KEYWORD, IN_KEYWORD);
+    if (!r) r = consumeToken(b, IS_KEYWORD);
+    if (!r) r = parseTokens(b, 0, IS_KEYWORD, NOT_KEYWORD);
     exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // 'not' 'in'
-  private static boolean comp_op_8(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "comp_op_8")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, "not");
-    r = r && consumeToken(b, "in");
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // 'is' 'not'
-  private static boolean comp_op_10(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "comp_op_10")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, "is");
-    r = r && consumeToken(b, "not");
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -976,13 +961,14 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'استمر'
+  // CONTINUE_KEYWORD
   public static boolean continue_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "continue_stmt")) return false;
+    if (!nextTokenIs(b, CONTINUE_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, CONTINUE_STMT, "<continue stmt>");
-    r = consumeToken(b, "استمر");
-    exit_section_(b, l, m, r, false, null);
+    Marker m = enter_section_(b);
+    r = consumeToken(b, CONTINUE_KEYWORD);
+    exit_section_(b, m, CONTINUE_STMT, r);
     return r;
   }
 
@@ -990,11 +976,12 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   // decorators (classdef | funcdef | async_funcdef)
   public static boolean decorated(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "decorated")) return false;
+    if (!nextTokenIs(b, AT)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, DECORATED, "<decorated>");
+    Marker m = enter_section_(b);
     r = decorators(b, l + 1);
     r = r && decorated_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, DECORATED, r);
     return r;
   }
 
@@ -1012,13 +999,14 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   // '@' dotted_name [ '(' [arglist] ')' ] NEWLINE
   public static boolean decorator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "decorator")) return false;
+    if (!nextTokenIs(b, AT)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, DECORATOR, "<decorator>");
-    r = consumeToken(b, "@");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, AT);
     r = r && dotted_name(b, l + 1);
     r = r && decorator_2(b, l + 1);
     r = r && consumeToken(b, NEWLINE);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, DECORATOR, r);
     return r;
   }
 
@@ -1034,9 +1022,9 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "decorator_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "(");
+    r = consumeToken(b, LPAR);
     r = r && decorator_2_0_1(b, l + 1);
-    r = r && consumeToken(b, ")");
+    r = r && consumeToken(b, RPAR);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -1052,27 +1040,29 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   // decorator+
   public static boolean decorators(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "decorators")) return false;
+    if (!nextTokenIs(b, AT)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, DECORATORS, "<decorators>");
+    Marker m = enter_section_(b);
     r = decorator(b, l + 1);
     while (r) {
       int c = current_position_(b);
       if (!decorator(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "decorators", c)) break;
     }
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, DECORATORS, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'حذف' exprlist
+  // DEL_KEYWORD exprlist
   public static boolean del_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "del_stmt")) return false;
+    if (!nextTokenIs(b, DEL_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, DEL_STMT, "<del stmt>");
-    r = consumeToken(b, "حذف");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DEL_KEYWORD);
     r = r && exprlist(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, DEL_STMT, r);
     return r;
   }
 
@@ -1120,7 +1110,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = test(b, l + 1);
-    r = r && consumeToken(b, ":");
+    r = r && consumeToken(b, COLON);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -1131,7 +1121,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "dictorsetmaker_0_0_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "**");
+    r = consumeToken(b, EXP);
     r = r && expr(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -1198,7 +1188,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = test(b, l + 1);
-    r = r && consumeToken(b, ":");
+    r = r && consumeToken(b, COLON);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -1209,7 +1199,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "dictorsetmaker_0_1_1_0_0_1_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "**");
+    r = consumeToken(b, EXP);
     r = r && expr(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -1398,8 +1388,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "dotted_name_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, ".");
-    r = r && consumeToken(b, NAME);
+    r = consumeTokens(b, 0, DOT, NAME);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -1441,25 +1430,26 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'إلا' [test ['مثل' NAME]]
+  // EXCEPT_KEYWORD [test [AS_KEYWORD NAME]]
   public static boolean except_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "except_clause")) return false;
+    if (!nextTokenIs(b, EXCEPT_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, EXCEPT_CLAUSE, "<except clause>");
-    r = consumeToken(b, "إلا");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, EXCEPT_KEYWORD);
     r = r && except_clause_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, EXCEPT_CLAUSE, r);
     return r;
   }
 
-  // [test ['مثل' NAME]]
+  // [test [AS_KEYWORD NAME]]
   private static boolean except_clause_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "except_clause_1")) return false;
     except_clause_1_0(b, l + 1);
     return true;
   }
 
-  // test ['مثل' NAME]
+  // test [AS_KEYWORD NAME]
   private static boolean except_clause_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "except_clause_1_0")) return false;
     boolean r;
@@ -1470,22 +1460,11 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ['مثل' NAME]
+  // [AS_KEYWORD NAME]
   private static boolean except_clause_1_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "except_clause_1_0_1")) return false;
-    except_clause_1_0_1_0(b, l + 1);
+    parseTokens(b, 0, AS_KEYWORD, NAME);
     return true;
-  }
-
-  // 'مثل' NAME
-  private static boolean except_clause_1_0_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "except_clause_1_0_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, "مثل");
-    r = r && consumeToken(b, NAME);
-    exit_section_(b, m, null, r);
-    return r;
   }
 
   /* ********************************************************** */
@@ -1516,7 +1495,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "expr_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "|");
+    r = consumeToken(b, OR);
     r = r && xor_expr(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -1584,7 +1563,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "expr_stmt_1_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "=");
+    r = consumeToken(b, EQ);
     r = r && expr_stmt_1_2_0_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -1687,9 +1666,9 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "factor_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "+");
-    if (!r) r = consumeToken(b, "-");
-    if (!r) r = consumeToken(b, "~");
+    r = consumeToken(b, PLUS);
+    if (!r) r = consumeToken(b, MINUS);
+    if (!r) r = consumeToken(b, TILDE);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -1742,54 +1721,54 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'لأن' exprlist 'في' testlist ':' suite ['آخر' ':' suite]
+  // FOR_KEYWORD exprlist IN_KEYWORD testlist ':' suite [ELSE_KEYWORD ':' suite]
   public static boolean for_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "for_stmt")) return false;
+    if (!nextTokenIs(b, FOR_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, FOR_STMT, "<for stmt>");
-    r = consumeToken(b, "لأن");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, FOR_KEYWORD);
     r = r && exprlist(b, l + 1);
-    r = r && consumeToken(b, "في");
+    r = r && consumeToken(b, IN_KEYWORD);
     r = r && testlist(b, l + 1);
-    r = r && consumeToken(b, ":");
+    r = r && consumeToken(b, COLON);
     r = r && suite(b, l + 1);
     r = r && for_stmt_6(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, FOR_STMT, r);
     return r;
   }
 
-  // ['آخر' ':' suite]
+  // [ELSE_KEYWORD ':' suite]
   private static boolean for_stmt_6(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "for_stmt_6")) return false;
     for_stmt_6_0(b, l + 1);
     return true;
   }
 
-  // 'آخر' ':' suite
+  // ELSE_KEYWORD ':' suite
   private static boolean for_stmt_6_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "for_stmt_6_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "آخر");
-    r = r && consumeToken(b, ":");
+    r = consumeTokens(b, 0, ELSE_KEYWORD, COLON);
     r = r && suite(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'وظيفة' NAME parameters ['->' test] ':' suite
+  // DEF_KEYWORD NAME parameters ['->' test] ':' suite
   public static boolean funcdef(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "funcdef")) return false;
+    if (!nextTokenIs(b, DEF_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, FUNCDEF, "<funcdef>");
-    r = consumeToken(b, "وظيفة");
-    r = r && consumeToken(b, NAME);
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, DEF_KEYWORD, NAME);
     r = r && parameters(b, l + 1);
     r = r && funcdef_3(b, l + 1);
-    r = r && consumeToken(b, ":");
+    r = r && consumeToken(b, COLON);
     r = r && suite(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, FUNCDEF, r);
     return r;
   }
 
@@ -1805,22 +1784,22 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "funcdef_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "->");
+    r = consumeToken(b, RARROW);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'عالمي' NAME (',' NAME)*
+  // GLOBAL_KEYWORD NAME (',' NAME)*
   public static boolean global_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "global_stmt")) return false;
+    if (!nextTokenIs(b, GLOBAL_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, GLOBAL_STMT, "<global stmt>");
-    r = consumeToken(b, "عالمي");
-    r = r && consumeToken(b, NAME);
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, GLOBAL_KEYWORD, NAME);
     r = r && global_stmt_2(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, GLOBAL_STMT, r);
     return r;
   }
 
@@ -1847,22 +1826,23 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'لو' test ':' suite ('ولو' test ':' suite)* ['آخر' ':' suite]
+  // IF_KEYWORD test ':' suite (ELIF_KEYWORD test ':' suite)* [ELSE_KEYWORD ':' suite]
   public static boolean if_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "if_stmt")) return false;
+    if (!nextTokenIs(b, IF_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, IF_STMT, "<if stmt>");
-    r = consumeToken(b, "لو");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IF_KEYWORD);
     r = r && test(b, l + 1);
-    r = r && consumeToken(b, ":");
+    r = r && consumeToken(b, COLON);
     r = r && suite(b, l + 1);
     r = r && if_stmt_4(b, l + 1);
     r = r && if_stmt_5(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, IF_STMT, r);
     return r;
   }
 
-  // ('ولو' test ':' suite)*
+  // (ELIF_KEYWORD test ':' suite)*
   private static boolean if_stmt_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "if_stmt_4")) return false;
     while (true) {
@@ -1873,33 +1853,32 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // 'ولو' test ':' suite
+  // ELIF_KEYWORD test ':' suite
   private static boolean if_stmt_4_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "if_stmt_4_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "ولو");
+    r = consumeToken(b, ELIF_KEYWORD);
     r = r && test(b, l + 1);
-    r = r && consumeToken(b, ":");
+    r = r && consumeToken(b, COLON);
     r = r && suite(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // ['آخر' ':' suite]
+  // [ELSE_KEYWORD ':' suite]
   private static boolean if_stmt_5(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "if_stmt_5")) return false;
     if_stmt_5_0(b, l + 1);
     return true;
   }
 
-  // 'آخر' ':' suite
+  // ELSE_KEYWORD ':' suite
   private static boolean if_stmt_5_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "if_stmt_5_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "آخر");
-    r = r && consumeToken(b, ":");
+    r = consumeTokens(b, 0, ELSE_KEYWORD, COLON);
     r = r && suite(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -1980,17 +1959,18 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'من' (('.' | '...')* dotted_name | ('.' | '...')+)
-  //               'استيراد' ('*' | '(' import_as_names ')' | import_as_names)
+  // FROM_KEYWORD (('.' | '...')* dotted_name | ('.' | '...')+)
+  //               IMPORT_KEYWORD ('*' | '(' import_as_names ')' | import_as_names)
   public static boolean import_from(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "import_from")) return false;
+    if (!nextTokenIs(b, FROM_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, IMPORT_FROM, "<import from>");
-    r = consumeToken(b, "من");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, FROM_KEYWORD);
     r = r && import_from_1(b, l + 1);
-    r = r && consumeToken(b, "استيراد");
+    r = r && consumeToken(b, IMPORT_KEYWORD);
     r = r && import_from_3(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, IMPORT_FROM, r);
     return r;
   }
 
@@ -2032,7 +2012,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "import_from_1_0_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, ".");
+    r = consumeToken(b, DOT);
     if (!r) r = consumeToken(b, "...");
     exit_section_(b, m, null, r);
     return r;
@@ -2058,7 +2038,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "import_from_1_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, ".");
+    r = consumeToken(b, DOT);
     if (!r) r = consumeToken(b, "...");
     exit_section_(b, m, null, r);
     return r;
@@ -2069,7 +2049,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "import_from_3")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "*");
+    r = consumeToken(b, MULT);
     if (!r) r = import_from_3_1(b, l + 1);
     if (!r) r = import_as_names(b, l + 1);
     exit_section_(b, m, null, r);
@@ -2081,22 +2061,23 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "import_from_3_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "(");
+    r = consumeToken(b, LPAR);
     r = r && import_as_names(b, l + 1);
-    r = r && consumeToken(b, ")");
+    r = r && consumeToken(b, RPAR);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'استيراد' dotted_as_names
+  // IMPORT_KEYWORD dotted_as_names
   public static boolean import_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "import_name")) return false;
+    if (!nextTokenIs(b, IMPORT_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, IMPORT_NAME, "<import name>");
-    r = consumeToken(b, "استيراد");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IMPORT_KEYWORD);
     r = r && dotted_as_names(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, IMPORT_NAME, r);
     return r;
   }
 
@@ -2104,6 +2085,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   // import_name | import_from
   public static boolean import_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "import_stmt")) return false;
+    if (!nextTokenIs(b, "<import stmt>", FROM_KEYWORD, IMPORT_KEYWORD)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, IMPORT_STMT, "<import stmt>");
     r = import_name(b, l + 1);
@@ -2127,16 +2109,17 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'امدا' [varargslist] ':' test
+  // LAMBDA_KEYWORD [varargslist] ':' test
   public static boolean lambdef(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "lambdef")) return false;
+    if (!nextTokenIs(b, LAMBDA_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, LAMBDEF, "<lambdef>");
-    r = consumeToken(b, "امدا");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LAMBDA_KEYWORD);
     r = r && lambdef_1(b, l + 1);
-    r = r && consumeToken(b, ":");
+    r = r && consumeToken(b, COLON);
     r = r && test(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, LAMBDEF, r);
     return r;
   }
 
@@ -2148,16 +2131,17 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'امدا' [varargslist] ':' test_nocond
+  // LAMBDA_KEYWORD [varargslist] ':' test_nocond
   public static boolean lambdef_nocond(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "lambdef_nocond")) return false;
+    if (!nextTokenIs(b, LAMBDA_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, LAMBDEF_NOCOND, "<lambdef nocond>");
-    r = consumeToken(b, "امدا");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LAMBDA_KEYWORD);
     r = r && lambdef_nocond_1(b, l + 1);
-    r = r && consumeToken(b, ":");
+    r = r && consumeToken(b, COLON);
     r = r && test_nocond(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, LAMBDEF_NOCOND, r);
     return r;
   }
 
@@ -2169,15 +2153,15 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'غيرمحلي' NAME (',' NAME)*
+  // NONLOCAL_KEYWORD NAME (',' NAME)*
   public static boolean nonlocal_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "nonlocal_stmt")) return false;
+    if (!nextTokenIs(b, NONLOCAL_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, NONLOCAL_STMT, "<nonlocal stmt>");
-    r = consumeToken(b, "غيرمحلي");
-    r = r && consumeToken(b, NAME);
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, NONLOCAL_KEYWORD, NAME);
     r = r && nonlocal_stmt_2(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, NONLOCAL_STMT, r);
     return r;
   }
 
@@ -2204,7 +2188,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'لا' not_test | comparison
+  // NOT_KEYWORD not_test | comparison
   public static boolean not_test(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "not_test")) return false;
     boolean r;
@@ -2215,19 +2199,19 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // 'لا' not_test
+  // NOT_KEYWORD not_test
   private static boolean not_test_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "not_test_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "لا");
+    r = consumeToken(b, NOT_KEYWORD);
     r = r && not_test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // and_test ('أو' and_test)*
+  // and_test (OR_KEYWORD and_test)*
   public static boolean or_test(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "or_test")) return false;
     boolean r;
@@ -2238,7 +2222,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ('أو' and_test)*
+  // (OR_KEYWORD and_test)*
   private static boolean or_test_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "or_test_1")) return false;
     while (true) {
@@ -2249,12 +2233,12 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // 'أو' and_test
+  // OR_KEYWORD and_test
   private static boolean or_test_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "or_test_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "أو");
+    r = consumeToken(b, OR_KEYWORD);
     r = r && and_test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -2264,12 +2248,13 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   // '(' [typedargslist] ')'
   public static boolean parameters(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameters")) return false;
+    if (!nextTokenIs(b, LPAR)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, PARAMETERS, "<parameters>");
-    r = consumeToken(b, "(");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LPAR);
     r = r && parameters_1(b, l + 1);
-    r = r && consumeToken(b, ")");
-    exit_section_(b, l, m, r, false, null);
+    r = r && consumeToken(b, RPAR);
+    exit_section_(b, m, PARAMETERS, r);
     return r;
   }
 
@@ -2281,13 +2266,14 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'مرر'
+  // PASS_KEYWORD
   public static boolean pass_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "pass_stmt")) return false;
+    if (!nextTokenIs(b, PASS_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, PASS_STMT, "<pass stmt>");
-    r = consumeToken(b, "مرر");
-    exit_section_(b, l, m, r, false, null);
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PASS_KEYWORD);
+    exit_section_(b, m, PASS_STMT, r);
     return r;
   }
 
@@ -2315,7 +2301,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "power_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "**");
+    r = consumeToken(b, EXP);
     r = r && factor(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -2361,25 +2347,26 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'رفع' [test ['من' test]]
+  // RAISE_KEYWORD [test [FROM_KEYWORD test]]
   public static boolean raise_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "raise_stmt")) return false;
+    if (!nextTokenIs(b, RAISE_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, RAISE_STMT, "<raise stmt>");
-    r = consumeToken(b, "رفع");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, RAISE_KEYWORD);
     r = r && raise_stmt_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, RAISE_STMT, r);
     return r;
   }
 
-  // [test ['من' test]]
+  // [test [FROM_KEYWORD test]]
   private static boolean raise_stmt_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "raise_stmt_1")) return false;
     raise_stmt_1_0(b, l + 1);
     return true;
   }
 
-  // test ['من' test]
+  // test [FROM_KEYWORD test]
   private static boolean raise_stmt_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "raise_stmt_1_0")) return false;
     boolean r;
@@ -2390,33 +2377,34 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ['من' test]
+  // [FROM_KEYWORD test]
   private static boolean raise_stmt_1_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "raise_stmt_1_0_1")) return false;
     raise_stmt_1_0_1_0(b, l + 1);
     return true;
   }
 
-  // 'من' test
+  // FROM_KEYWORD test
   private static boolean raise_stmt_1_0_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "raise_stmt_1_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "من");
+    r = consumeToken(b, FROM_KEYWORD);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'إرجع' [testlist]
+  // RETURN_KEYWORD [testlist]
   public static boolean return_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "return_stmt")) return false;
+    if (!nextTokenIs(b, RETURN_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, RETURN_STMT, "<return stmt>");
-    r = consumeToken(b, "إرجع");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, RETURN_KEYWORD);
     r = r && return_stmt_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, RETURN_STMT, r);
     return r;
   }
 
@@ -2466,14 +2454,14 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "shift_expr_1_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "<<");
-    if (!r) r = consumeToken(b, ">>");
+    r = consumeToken(b, LTLT);
+    if (!r) r = consumeToken(b, GTGT);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // small_stmt (';' small_stmt)* [';'] NEWLINE
+  // small_stmt ('؛' small_stmt)* ['؛'] NEWLINE
   public static boolean simple_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "simple_stmt")) return false;
     boolean r;
@@ -2486,7 +2474,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (';' small_stmt)*
+  // ('؛' small_stmt)*
   private static boolean simple_stmt_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "simple_stmt_1")) return false;
     while (true) {
@@ -2497,21 +2485,21 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ';' small_stmt
+  // '؛' small_stmt
   private static boolean simple_stmt_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "simple_stmt_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, ";");
+    r = consumeToken(b, SEMICOLON);
     r = r && small_stmt(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // [';']
+  // ['؛']
   private static boolean simple_stmt_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "simple_stmt_2")) return false;
-    consumeToken(b, ";");
+    consumeToken(b, SEMICOLON);
     return true;
   }
 
@@ -2543,11 +2531,12 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   // ':' [test]
   public static boolean sliceop(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "sliceop")) return false;
+    if (!nextTokenIs(b, COLON)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, SLICEOP, "<sliceop>");
-    r = consumeToken(b, ":");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COLON);
     r = r && sliceop_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, SLICEOP, r);
     return r;
   }
 
@@ -2581,11 +2570,12 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   // '*' expr
   public static boolean star_expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "star_expr")) return false;
+    if (!nextTokenIs(b, MULT)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, STAR_EXPR, "<star expr>");
-    r = consumeToken(b, "*");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, MULT);
     r = r && expr(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, STAR_EXPR, r);
     return r;
   }
 
@@ -2619,7 +2609,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = subscript_1_0(b, l + 1);
-    r = r && consumeToken(b, ":");
+    r = r && consumeToken(b, COLON);
     r = r && subscript_1_2(b, l + 1);
     r = r && subscript_1_3(b, l + 1);
     exit_section_(b, m, null, r);
@@ -2729,17 +2719,18 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'لأن' exprlist 'في' or_test [comp_iter]
+  // FOR_KEYWORD exprlist IN_KEYWORD or_test [comp_iter]
   public static boolean sync_comp_for(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "sync_comp_for")) return false;
+    if (!nextTokenIs(b, FOR_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, SYNC_COMP_FOR, "<sync comp for>");
-    r = consumeToken(b, "لأن");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, FOR_KEYWORD);
     r = r && exprlist(b, l + 1);
-    r = r && consumeToken(b, "في");
+    r = r && consumeToken(b, IN_KEYWORD);
     r = r && or_test(b, l + 1);
     r = r && sync_comp_for_4(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, SYNC_COMP_FOR, r);
     return r;
   }
 
@@ -2751,7 +2742,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // factor (('*'|'@'|'/'|'%'|'//') factor)*
+  // factor (('*'|'@'|'/'|'٪'|'//') factor)*
   public static boolean term(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "term")) return false;
     boolean r;
@@ -2762,7 +2753,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (('*'|'@'|'/'|'%'|'//') factor)*
+  // (('*'|'@'|'/'|'٪'|'//') factor)*
   private static boolean term_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "term_1")) return false;
     while (true) {
@@ -2773,7 +2764,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ('*'|'@'|'/'|'%'|'//') factor
+  // ('*'|'@'|'/'|'٪'|'//') factor
   private static boolean term_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "term_1_0")) return false;
     boolean r;
@@ -2784,22 +2775,22 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '*'|'@'|'/'|'%'|'//'
+  // '*'|'@'|'/'|'٪'|'//'
   private static boolean term_1_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "term_1_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "*");
-    if (!r) r = consumeToken(b, "@");
-    if (!r) r = consumeToken(b, "/");
-    if (!r) r = consumeToken(b, "%");
-    if (!r) r = consumeToken(b, "//");
+    r = consumeToken(b, MULT);
+    if (!r) r = consumeToken(b, AT);
+    if (!r) r = consumeToken(b, DIV);
+    if (!r) r = consumeToken(b, PERC);
+    if (!r) r = consumeToken(b, FLOORDIV);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // or_test ['لو' or_test 'آخر' test] | lambdef
+  // or_test [IF_KEYWORD or_test ELSE_KEYWORD test] | lambdef
   public static boolean test(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "test")) return false;
     boolean r;
@@ -2810,7 +2801,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // or_test ['لو' or_test 'آخر' test]
+  // or_test [IF_KEYWORD or_test ELSE_KEYWORD test]
   private static boolean test_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "test_0")) return false;
     boolean r;
@@ -2821,21 +2812,21 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ['لو' or_test 'آخر' test]
+  // [IF_KEYWORD or_test ELSE_KEYWORD test]
   private static boolean test_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "test_0_1")) return false;
     test_0_1_0(b, l + 1);
     return true;
   }
 
-  // 'لو' or_test 'آخر' test
+  // IF_KEYWORD or_test ELSE_KEYWORD test
   private static boolean test_0_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "test_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "لو");
+    r = consumeToken(b, IF_KEYWORD);
     r = r && or_test(b, l + 1);
-    r = r && consumeToken(b, "آخر");
+    r = r && consumeToken(b, ELSE_KEYWORD);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -3061,7 +3052,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "tfpdef_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, ":");
+    r = consumeToken(b, COLON);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -3075,7 +3066,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, TRAILER, "<trailer>");
     r = trailer_0(b, l + 1);
     if (!r) r = trailer_1(b, l + 1);
-    if (!r) r = trailer_2(b, l + 1);
+    if (!r) r = parseTokens(b, 0, DOT, NAME);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -3085,9 +3076,9 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "trailer_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "(");
+    r = consumeToken(b, LPAR);
     r = r && trailer_0_1(b, l + 1);
-    r = r && consumeToken(b, ")");
+    r = r && consumeToken(b, RPAR);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3104,46 +3095,35 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "trailer_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "[");
+    r = consumeToken(b, LBRACKET);
     r = r && subscriptlist(b, l + 1);
-    r = r && consumeToken(b, "]");
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // '.' NAME
-  private static boolean trailer_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "trailer_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, ".");
-    r = r && consumeToken(b, NAME);
+    r = r && consumeToken(b, RBRACKET);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'حاول' ':' suite
+  // TRY_KEYWORD ':' suite
   //            ((except_clause ':' suite)+
-  //             ['آخر' ':' suite]
-  //             ['أخيرا' ':' suite] |
-  //            'أخيرا' ':' suite)
+  //             [ELSE_KEYWORD ':' suite]
+  //             [FINALLY_KEYWORD ':' suite] |
+  //            FINALLY_KEYWORD ':' suite)
   public static boolean try_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "try_stmt")) return false;
+    if (!nextTokenIs(b, TRY_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, TRY_STMT, "<try stmt>");
-    r = consumeToken(b, "حاول");
-    r = r && consumeToken(b, ":");
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, TRY_KEYWORD, COLON);
     r = r && suite(b, l + 1);
     r = r && try_stmt_3(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, TRY_STMT, r);
     return r;
   }
 
   // (except_clause ':' suite)+
-  //             ['آخر' ':' suite]
-  //             ['أخيرا' ':' suite] |
-  //            'أخيرا' ':' suite
+  //             [ELSE_KEYWORD ':' suite]
+  //             [FINALLY_KEYWORD ':' suite] |
+  //            FINALLY_KEYWORD ':' suite
   private static boolean try_stmt_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "try_stmt_3")) return false;
     boolean r;
@@ -3155,8 +3135,8 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   // (except_clause ':' suite)+
-  //             ['آخر' ':' suite]
-  //             ['أخيرا' ':' suite]
+  //             [ELSE_KEYWORD ':' suite]
+  //             [FINALLY_KEYWORD ':' suite]
   private static boolean try_stmt_3_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "try_stmt_3_0")) return false;
     boolean r;
@@ -3189,57 +3169,54 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = except_clause(b, l + 1);
-    r = r && consumeToken(b, ":");
+    r = r && consumeToken(b, COLON);
     r = r && suite(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // ['آخر' ':' suite]
+  // [ELSE_KEYWORD ':' suite]
   private static boolean try_stmt_3_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "try_stmt_3_0_1")) return false;
     try_stmt_3_0_1_0(b, l + 1);
     return true;
   }
 
-  // 'آخر' ':' suite
+  // ELSE_KEYWORD ':' suite
   private static boolean try_stmt_3_0_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "try_stmt_3_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "آخر");
-    r = r && consumeToken(b, ":");
+    r = consumeTokens(b, 0, ELSE_KEYWORD, COLON);
     r = r && suite(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // ['أخيرا' ':' suite]
+  // [FINALLY_KEYWORD ':' suite]
   private static boolean try_stmt_3_0_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "try_stmt_3_0_2")) return false;
     try_stmt_3_0_2_0(b, l + 1);
     return true;
   }
 
-  // 'أخيرا' ':' suite
+  // FINALLY_KEYWORD ':' suite
   private static boolean try_stmt_3_0_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "try_stmt_3_0_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "أخيرا");
-    r = r && consumeToken(b, ":");
+    r = consumeTokens(b, 0, FINALLY_KEYWORD, COLON);
     r = r && suite(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // 'أخيرا' ':' suite
+  // FINALLY_KEYWORD ':' suite
   private static boolean try_stmt_3_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "try_stmt_3_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "أخيرا");
-    r = r && consumeToken(b, ":");
+    r = consumeTokens(b, 0, FINALLY_KEYWORD, COLON);
     r = r && suite(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -3289,7 +3266,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "typedargslist_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "=");
+    r = consumeToken(b, EQ);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -3330,7 +3307,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "typedargslist_0_2_0_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "=");
+    r = consumeToken(b, EQ);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -3384,7 +3361,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "typedargslist_0_3_0_1_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "*");
+    r = consumeToken(b, MULT);
     r = r && typedargslist_0_3_0_1_0_0_1(b, l + 1);
     r = r && typedargslist_0_3_0_1_0_0_2(b, l + 1);
     r = r && typedargslist_0_3_0_1_0_0_3(b, l + 1);
@@ -3434,7 +3411,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "typedargslist_0_3_0_1_0_0_2_0_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "=");
+    r = consumeToken(b, EQ);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -3470,7 +3447,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "typedargslist_0_3_0_1_0_0_3_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "**");
+    r = consumeToken(b, EXP);
     r = r && tfpdef(b, l + 1);
     r = r && typedargslist_0_3_0_1_0_0_3_0_1_0_2(b, l + 1);
     exit_section_(b, m, null, r);
@@ -3489,7 +3466,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "typedargslist_0_3_0_1_0_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "**");
+    r = consumeToken(b, EXP);
     r = r && tfpdef(b, l + 1);
     r = r && typedargslist_0_3_0_1_0_1_2(b, l + 1);
     exit_section_(b, m, null, r);
@@ -3508,7 +3485,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "typedargslist_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "*");
+    r = consumeToken(b, MULT);
     r = r && typedargslist_1_1(b, l + 1);
     r = r && typedargslist_1_2(b, l + 1);
     r = r && typedargslist_1_3(b, l + 1);
@@ -3558,7 +3535,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "typedargslist_1_2_0_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "=");
+    r = consumeToken(b, EQ);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -3594,7 +3571,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "typedargslist_1_3_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "**");
+    r = consumeToken(b, EXP);
     r = r && tfpdef(b, l + 1);
     r = r && typedargslist_1_3_0_1_0_2(b, l + 1);
     exit_section_(b, m, null, r);
@@ -3613,7 +3590,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "typedargslist_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "**");
+    r = consumeToken(b, EXP);
     r = r && tfpdef(b, l + 1);
     r = r && typedargslist_2_2(b, l + 1);
     exit_section_(b, m, null, r);
@@ -3671,7 +3648,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "varargslist_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "=");
+    r = consumeToken(b, EQ);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -3712,7 +3689,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "varargslist_0_2_0_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "=");
+    r = consumeToken(b, EQ);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -3766,7 +3743,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "varargslist_0_3_0_1_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "*");
+    r = consumeToken(b, MULT);
     r = r && varargslist_0_3_0_1_0_0_1(b, l + 1);
     r = r && varargslist_0_3_0_1_0_0_2(b, l + 1);
     r = r && varargslist_0_3_0_1_0_0_3(b, l + 1);
@@ -3816,7 +3793,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "varargslist_0_3_0_1_0_0_2_0_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "=");
+    r = consumeToken(b, EQ);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -3852,7 +3829,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "varargslist_0_3_0_1_0_0_3_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "**");
+    r = consumeToken(b, EXP);
     r = r && vfpdef(b, l + 1);
     r = r && varargslist_0_3_0_1_0_0_3_0_1_0_2(b, l + 1);
     exit_section_(b, m, null, r);
@@ -3871,7 +3848,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "varargslist_0_3_0_1_0_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "**");
+    r = consumeToken(b, EXP);
     r = r && vfpdef(b, l + 1);
     r = r && varargslist_0_3_0_1_0_1_2(b, l + 1);
     exit_section_(b, m, null, r);
@@ -3890,7 +3867,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "varargslist_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "*");
+    r = consumeToken(b, MULT);
     r = r && varargslist_1_1(b, l + 1);
     r = r && varargslist_1_2(b, l + 1);
     r = r && varargslist_1_3(b, l + 1);
@@ -3940,7 +3917,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "varargslist_1_2_0_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "=");
+    r = consumeToken(b, EQ);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -3976,7 +3953,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "varargslist_1_3_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "**");
+    r = consumeToken(b, EXP);
     r = r && vfpdef(b, l + 1);
     r = r && varargslist_1_3_0_1_0_2(b, l + 1);
     exit_section_(b, m, null, r);
@@ -3995,7 +3972,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "varargslist_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "**");
+    r = consumeToken(b, EXP);
     r = r && vfpdef(b, l + 1);
     r = r && varargslist_2_2(b, l + 1);
     exit_section_(b, m, null, r);
@@ -4022,41 +3999,41 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'بينما' test ':' suite ['آخر' ':' suite]
+  // WHILE_KEYWORD test ':' suite [ELSE_KEYWORD ':' suite]
   public static boolean while_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "while_stmt")) return false;
+    if (!nextTokenIs(b, WHILE_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, WHILE_STMT, "<while stmt>");
-    r = consumeToken(b, "بينما");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, WHILE_KEYWORD);
     r = r && test(b, l + 1);
-    r = r && consumeToken(b, ":");
+    r = r && consumeToken(b, COLON);
     r = r && suite(b, l + 1);
     r = r && while_stmt_4(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, WHILE_STMT, r);
     return r;
   }
 
-  // ['آخر' ':' suite]
+  // [ELSE_KEYWORD ':' suite]
   private static boolean while_stmt_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "while_stmt_4")) return false;
     while_stmt_4_0(b, l + 1);
     return true;
   }
 
-  // 'آخر' ':' suite
+  // ELSE_KEYWORD ':' suite
   private static boolean while_stmt_4_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "while_stmt_4_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "آخر");
-    r = r && consumeToken(b, ":");
+    r = consumeTokens(b, 0, ELSE_KEYWORD, COLON);
     r = r && suite(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // test ['مثل' expr]
+  // test [AS_KEYWORD expr]
   public static boolean with_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "with_item")) return false;
     boolean r;
@@ -4067,36 +4044,37 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ['مثل' expr]
+  // [AS_KEYWORD expr]
   private static boolean with_item_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "with_item_1")) return false;
     with_item_1_0(b, l + 1);
     return true;
   }
 
-  // 'مثل' expr
+  // AS_KEYWORD expr
   private static boolean with_item_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "with_item_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "مثل");
+    r = consumeToken(b, AS_KEYWORD);
     r = r && expr(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'مع' with_item (',' with_item)*  ':' suite
+  // WITH_KEYWORD with_item (',' with_item)*  ':' suite
   public static boolean with_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "with_stmt")) return false;
+    if (!nextTokenIs(b, WITH_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, WITH_STMT, "<with stmt>");
-    r = consumeToken(b, "مع");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, WITH_KEYWORD);
     r = r && with_item(b, l + 1);
     r = r && with_stmt_2(b, l + 1);
-    r = r && consumeToken(b, ":");
+    r = r && consumeToken(b, COLON);
     r = r && suite(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, WITH_STMT, r);
     return r;
   }
 
@@ -4150,7 +4128,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "xor_expr_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "^");
+    r = consumeToken(b, XOR);
     r = r && and_expr(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -4169,7 +4147,7 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'من' test | testlist
+  // FROM_KEYWORD test | testlist
   public static boolean yield_arg(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "yield_arg")) return false;
     boolean r;
@@ -4180,26 +4158,27 @@ public class YaLangParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // 'من' test
+  // FROM_KEYWORD test
   private static boolean yield_arg_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "yield_arg_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "من");
+    r = consumeToken(b, FROM_KEYWORD);
     r = r && test(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'محصول' [yield_arg]
+  // YIELD_KEYWORD [yield_arg]
   public static boolean yield_expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "yield_expr")) return false;
+    if (!nextTokenIs(b, YIELD_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, YIELD_EXPR, "<yield expr>");
-    r = consumeToken(b, "محصول");
+    Marker m = enter_section_(b);
+    r = consumeToken(b, YIELD_KEYWORD);
     r = r && yield_expr_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, YIELD_EXPR, r);
     return r;
   }
 
@@ -4214,10 +4193,11 @@ public class YaLangParser implements PsiParser, LightPsiParser {
   // yield_expr
   public static boolean yield_stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "yield_stmt")) return false;
+    if (!nextTokenIs(b, YIELD_KEYWORD)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, YIELD_STMT, "<yield stmt>");
+    Marker m = enter_section_(b);
     r = yield_expr(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, YIELD_STMT, r);
     return r;
   }
 

@@ -54,7 +54,7 @@ class YaLangLexer implements FlexLexer {
 
   /* The ZZ_CMAP_A table has 320 entries */
   static final char ZZ_CMAP_A[] = zzUnpackCMap(
-    "\11\0\1\4\1\2\1\1\1\5\1\3\22\0\1\7\2\0\1\10\26\0\1\11\2\0\1\11\36\0\1\6\50"+
+    "\11\0\1\4\1\2\1\1\1\5\1\3\22\0\1\7\2\0\1\11\26\0\1\10\2\0\1\10\36\0\1\6\50"+
     "\0\1\1\242\0\2\1\26\0");
 
   /** 
@@ -64,7 +64,7 @@ class YaLangLexer implements FlexLexer {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\2\0\2\1\1\2\1\3\1\4\1\5\2\6\2\7"+
-    "\1\3\1\7\1\0\2\4\1\0\1\2\2\6";
+    "\1\3\1\7\1\0\2\5\1\0\1\2\2\6";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[21];
@@ -122,17 +122,16 @@ class YaLangLexer implements FlexLexer {
   private static final String ZZ_TRANS_PACKED_0 =
     "\1\3\1\4\1\5\1\4\2\5\1\6\1\5\1\7"+
     "\1\10\1\11\1\12\1\13\1\12\1\14\1\13\1\15"+
-    "\1\16\2\11\2\3\1\0\1\3\2\0\1\17\1\0"+
-    "\1\3\1\0\1\3\1\4\1\5\1\4\2\5\1\17"+
-    "\1\5\1\3\2\0\5\5\1\0\1\5\11\0\1\3"+
-    "\2\0\2\7\1\0\1\3\2\20\1\21\1\20\1\7"+
-    "\1\20\12\0\2\11\1\0\2\11\1\0\1\22\4\11"+
-    "\1\23\1\5\2\23\1\5\1\22\1\23\3\11\1\24"+
-    "\1\16\1\24\1\14\1\16\1\22\1\14\5\11\1\25"+
-    "\6\11\1\0\1\5\1\16\1\5\2\16\1\0\1\16"+
-    "\2\0\2\20\2\0\10\20\2\0\3\20\1\7\2\20"+
-    "\1\11\1\24\1\5\2\24\1\5\1\22\1\24\7\11"+
-    "\1\0\1\22\3\11";
+    "\1\16\2\11\2\3\1\0\1\3\2\0\1\17\2\0"+
+    "\2\3\1\4\1\5\1\4\2\5\1\17\1\5\1\0"+
+    "\1\3\1\0\5\5\1\0\1\5\11\0\1\3\14\0"+
+    "\2\10\1\0\1\3\2\20\1\21\2\20\1\10\2\11"+
+    "\1\0\2\11\1\0\1\22\4\11\1\23\1\5\2\23"+
+    "\1\5\1\22\1\23\3\11\1\24\1\16\1\24\1\14"+
+    "\1\16\1\22\1\14\5\11\1\25\6\11\1\0\1\5"+
+    "\1\16\1\5\2\16\1\0\1\16\2\0\2\20\2\0"+
+    "\10\20\2\0\3\20\1\10\2\20\1\11\1\24\1\5"+
+    "\2\24\1\5\1\22\1\24\7\11\1\0\1\22\3\11";
 
   private static int [] zzUnpackTrans() {
     int [] result = new int[170];
@@ -173,7 +172,7 @@ class YaLangLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\2\0\5\1\1\11\6\1\1\0\2\1\1\0\3\1";
+    "\2\0\4\1\1\11\7\1\1\0\2\1\1\0\3\1";
 
   private static int [] zzUnpackAttribute() {
     int [] result = new int[21];
@@ -422,62 +421,6 @@ class YaLangLexer implements FlexLexer {
     while (true) {
       zzMarkedPosL = zzMarkedPos;
 
-      boolean zzR = false;
-      int zzCh;
-      int zzCharCount;
-      for (zzCurrentPosL = zzStartRead  ;
-           zzCurrentPosL < zzMarkedPosL ;
-           zzCurrentPosL += zzCharCount ) {
-        zzCh = Character.codePointAt(zzBufferL, zzCurrentPosL/*, zzMarkedPosL*/);
-        zzCharCount = Character.charCount(zzCh);
-        switch (zzCh) {
-        case '\u000B':  // fall though
-        case '\u000C':  // fall though
-        case '\u0085':  // fall though
-        case '\u2028':  // fall though
-        case '\u2029':
-          yyline++;
-          yycolumn = 0;
-          zzR = false;
-          break;
-        case '\r':
-          yyline++;
-          yycolumn = 0;
-          zzR = true;
-          break;
-        case '\n':
-          if (zzR)
-            zzR = false;
-          else {
-            yyline++;
-            yycolumn = 0;
-          }
-          break;
-        default:
-          zzR = false;
-          yycolumn += zzCharCount;
-        }
-      }
-
-      if (zzR) {
-        // peek one character ahead if it is \n (if we have counted one line too much)
-        boolean zzPeek;
-        if (zzMarkedPosL < zzEndReadL)
-          zzPeek = zzBufferL.charAt(zzMarkedPosL) == '\n';
-        else if (zzAtEOF)
-          zzPeek = false;
-        else {
-          boolean eof = zzRefill();
-          zzEndReadL = zzEndRead;
-          zzMarkedPosL = zzMarkedPos;
-          zzBufferL = zzBuffer;
-          if (eof) 
-            zzPeek = false;
-          else 
-            zzPeek = zzBufferL.charAt(zzMarkedPosL) == '\n';
-        }
-        if (zzPeek) yyline--;
-      }
       zzAction = -1;
 
       zzCurrentPosL = zzCurrentPos = zzStartRead = zzMarkedPosL;
@@ -561,12 +504,12 @@ class YaLangLexer implements FlexLexer {
             // fall through
           case 10: break;
           case 4: 
-            { yybegin(YYINITIAL); return YaLangTypes.COMMENT;
+            { yybegin(WAITING_VALUE); return YaLangTypes.SEPARATOR;
             } 
             // fall through
           case 11: break;
           case 5: 
-            { yybegin(WAITING_VALUE); return YaLangTypes.SEPARATOR;
+            { yybegin(YYINITIAL); return YaLangTypes.COMMENT;
             } 
             // fall through
           case 12: break;
