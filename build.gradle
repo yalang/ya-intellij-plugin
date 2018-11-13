@@ -4,6 +4,11 @@ buildscript {
     }
 }
 
+publishPlugin {
+    username intellijPublishUsername
+    password intellijPublishPassword
+}
+
 plugins {
     id 'org.jetbrains.intellij' version '0.3.12'
 }
