@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import org.yalang.lexer.YaLangLexerAdapter;
 import org.yalang.psi.YaLangTypes;
 import org.jetbrains.annotations.NotNull;
 

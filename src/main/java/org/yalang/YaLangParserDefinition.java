@@ -4,6 +4,7 @@ import com.intellij.lexer.Lexer;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
+import org.yalang.lexer.YaLangLexerAdapter;
 import org.yalang.parser.YaLangParser;
 import org.yalang.psi.*;
 import org.jetbrains.annotations.NotNull;
