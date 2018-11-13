@@ -41,15 +41,11 @@ public class YaLangSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-        if (tokenType.equals(YaLangTypes.SEPARATOR)) {
-            return SEPARATOR_KEYS;
-        } else if (tokenType.equals(YaLangTypes.KEY)) {
+        if (YaLangTokenTypes.PREDEFINED_KEYWORDS.contains(tokenType)) {
             return KEY_KEYS;
-        } else if (tokenType.equals(YaLangTypes.VALUE)) {
+        } else if (YaLangTokenTypes.STRING_NODES.contains(tokenType)) {
             return VALUE_KEYS;
-        } else if (tokenType.equals(YaLangTypes.IF_STMT)) {
-            return KEY_KEYS;
-        } else if (tokenType.equals(YaLangTypes.COMMENT)) {
+        } else if (tokenType.equals(YaLangTokenTypes.END_OF_LINE_COMMENT)) {
             return COMMENT_KEYS;
         } else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
             return BAD_CHAR_KEYS;

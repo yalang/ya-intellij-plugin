@@ -2,7 +2,7 @@ package org.yalang.lexer;
 
 import com.intellij.psi.tree.IElementType;
 import org.yalang.YaLangTokenTypes;
-import org.yalang.lexer.YaLangLexerFStringHelper;
+//import org.yalang.lexer.YaLangLexerFStringHelper;
 import com.intellij.openapi.util.text.StringUtil;
 
 %%
@@ -86,7 +86,7 @@ FSTRING_FRAGMENT_TYPE_CONVERSION = "!" [^=:'\"} \t\r\n]*
 %state FSTRING_FRAGMENT
 %xstate FSTRING_FRAGMENT_FORMAT
 %{
-private final YaLangLexerFStringHelper fStringHelper = new YaLangLexerFStringHelper(this);
+//private final YaLangLexerFStringHelper fStringHelper = new YaLangLexerFStringHelper(this);
 
 private int getSpaceLength(CharSequence string) {
 String string1 = string.toString();
@@ -103,32 +103,32 @@ return yylength()-s.length();
 <FSTRING> {
   {FSTRING_TEXT_NO_QUOTES} { return YaLangTokenTypes.FSTRING_TEXT; }
   "\\" { return YaLangTokenTypes.FSTRING_TEXT; }
-  [\n] { return fStringHelper.handleLineBreakInLiteralText(); }
-  {FSTRING_QUOTES} { return fStringHelper.handleFStringEnd(); }
-  "{" { return fStringHelper.handleFragmentStart(); }
+//  [\n] { return fStringHelper.handleLineBreakInLiteralText(); }
+//  {FSTRING_QUOTES} { return fStringHelper.handleFStringEnd(); }
+//  "{" { return fStringHelper.handleFragmentStart(); }
 
   [^]  { return YaLangTokenTypes.BAD_CHARACTER; }
 }
 
 <FSTRING_FRAGMENT> {
-  "(" { return fStringHelper.handleLeftBracketInFragment(YaLangTokenTypes.LPAR); }
-  ")" { return fStringHelper.handleRightBracketInFragment(YaLangTokenTypes.RPAR); }
+//  "(" { return fStringHelper.handleLeftBracketInFragment(YaLangTokenTypes.LPAR); }
+//  ")" { return fStringHelper.handleRightBracketInFragment(YaLangTokenTypes.RPAR); }
 
-  "[" { return fStringHelper.handleLeftBracketInFragment(YaLangTokenTypes.LBRACKET); }
-  "]" { return fStringHelper.handleRightBracketInFragment(YaLangTokenTypes.RBRACKET); }
+//  "[" { return fStringHelper.handleLeftBracketInFragment(YaLangTokenTypes.LBRACKET); }
+//  "]" { return fStringHelper.handleRightBracketInFragment(YaLangTokenTypes.RBRACKET); }
 
-  "{" { return fStringHelper.handleLeftBracketInFragment(YaLangTokenTypes.LBRACE); }
-  "}" { return fStringHelper.handleRightBracketInFragment(YaLangTokenTypes.RBRACE); }
+//  "{" { return fStringHelper.handleLeftBracketInFragment(YaLangTokenTypes.LBRACE); }
+//  "}" { return fStringHelper.handleRightBracketInFragment(YaLangTokenTypes.RBRACE); }
 
   {FSTRING_FRAGMENT_TYPE_CONVERSION} { return YaLangTokenTypes.FSTRING_FRAGMENT_TYPE_CONVERSION; }
 
-  ":" { return fStringHelper.handleColonInFragment(); }
+//  ":" { return fStringHelper.handleColonInFragment(); }
 
-  {SINGLE_QUOTED_STRING} { return fStringHelper.handleStringLiteral(YaLangTokenTypes.SINGLE_QUOTED_STRING); }
-  {TRIPLE_QUOTED_STRING} { return fStringHelper.handleStringLiteral(YaLangTokenTypes.TRIPLE_QUOTED_STRING); }
-  {FSTRING_START}       { return fStringHelper.handleFStringStartInFragment(); }
+//  {SINGLE_QUOTED_STRING} { return fStringHelper.handleStringLiteral(YaLangTokenTypes.SINGLE_QUOTED_STRING); }
+//  {TRIPLE_QUOTED_STRING} { return fStringHelper.handleStringLiteral(YaLangTokenTypes.TRIPLE_QUOTED_STRING); }
+//  {FSTRING_START}       { return fStringHelper.handleFStringStartInFragment(); }
 
-  [\n] { return fStringHelper.handleLineBreakInFragment(); }
+//  [\n] { return fStringHelper.handleLineBreakInFragment(); }
 
   // Should be impossible inside expression fragments: any openingQuotes should be matched as a string literal there
   // {FSTRING_QUOTES} { return hasMatchingFStringStart(yytext().toString()) ? YaLangTokenTypes.FSTRING_END : YaLangTokenTypes.FSTRING_TEXT; }
@@ -137,10 +137,10 @@ return yylength()-s.length();
 <FSTRING_FRAGMENT_FORMAT> {
   {FSTRING_FORMAT_TEXT_NO_QUOTES} { return YaLangTokenTypes.FSTRING_TEXT; }
   "\\" { return YaLangTokenTypes.FSTRING_TEXT; }
-  [\n] { return fStringHelper.handleLineBreakInLiteralText(); }
-  {FSTRING_QUOTES} { return fStringHelper.handleFStringEnd(); }
-  "{" { return fStringHelper.handleFragmentStart(); }
-  "}" { return fStringHelper.handleFragmentEnd(); }
+//  [\n] { return fStringHelper.handleLineBreakInLiteralText(); }
+//  {FSTRING_QUOTES} { return fStringHelper.handleFStringEnd(); }
+//  "{" { return fStringHelper.handleFragmentStart(); }
+//  "}" { return fStringHelper.handleFragmentEnd(); }
 
   [^] { return YaLangTokenTypes.BAD_CHARACTER; }
 }
@@ -215,6 +215,15 @@ return YaLangTokenTypes.DOCSTRING; }
 "بينما"               { return YaLangTokenTypes.WHILE_KEYWORD; }
 "محصول"               { return YaLangTokenTypes.YIELD_KEYWORD; }
 
+"صحيح"                { return YaLangTokenTypes.TRUE_KEYWORD; }
+"زائف"                { return YaLangTokenTypes.FALSE_KEYWORD; }
+"لااحد"                { return YaLangTokenTypes.NONE_KEYWORD; }
+"غيرمتزامن"           { return YaLangTokenTypes.ASYNC_KEYWORD; }
+"مثل"                 { return YaLangTokenTypes.AS_KEYWORD; }
+"ترقب"                { return YaLangTokenTypes.AWAIT_KEYWORD; }
+"مع"                  { return YaLangTokenTypes.WITH_KEYWORD; }
+"غيرمحلي"             { return YaLangTokenTypes.NONLOCAL_KEYWORD; }
+
 {IDENTIFIER}          { return YaLangTokenTypes.IDENTIFIER; }
 
 "+="                  { return YaLangTokenTypes.PLUSEQ; }
@@ -224,7 +233,7 @@ return YaLangTokenTypes.DOCSTRING; }
 "@="                  { return YaLangTokenTypes.ATEQ; }
 "//="                 { return YaLangTokenTypes.FLOORDIVEQ; }
 "/="                  { return YaLangTokenTypes.DIVEQ; }
-"%="                  { return YaLangTokenTypes.PERCEQ; }
+"٪="                  { return YaLangTokenTypes.PERCEQ; }
 "&="                  { return YaLangTokenTypes.ANDEQ; }
 "|="                  { return YaLangTokenTypes.OREQ; }
 "^="                  { return YaLangTokenTypes.XOREQ; }
@@ -244,7 +253,7 @@ return YaLangTokenTypes.DOCSTRING; }
 "-"                   { return YaLangTokenTypes.MINUS; }
 "*"                   { return YaLangTokenTypes.MULT; }
 "/"                   { return YaLangTokenTypes.DIV; }
-"%"                   { return YaLangTokenTypes.PERC; }
+"٪"                   { return YaLangTokenTypes.PERC; }
 "&"                   { return YaLangTokenTypes.AND; }
 "|"                   { return YaLangTokenTypes.OR; }
 "^"                   { return YaLangTokenTypes.XOR; }
@@ -258,15 +267,15 @@ return YaLangTokenTypes.DOCSTRING; }
 "{"                   { return YaLangTokenTypes.LBRACE; }
 "}"                   { return YaLangTokenTypes.RBRACE; }
 "@"                   { return YaLangTokenTypes.AT; }
-","                   { return YaLangTokenTypes.COMMA; }
+"،"                   { return YaLangTokenTypes.COMMA; }
 ":"                   { return YaLangTokenTypes.COLON; }
 
 "."                   { return YaLangTokenTypes.DOT; }
 "`"                   { return YaLangTokenTypes.TICK; }
 "="                   { return YaLangTokenTypes.EQ; }
-";"                   { return YaLangTokenTypes.SEMICOLON; }
+"؛"                   { return YaLangTokenTypes.SEMICOLON; }
 
-{FSTRING_START}       { return fStringHelper.handleFStringStart(); }
+//{FSTRING_START}       { return fStringHelper.handleFStringStart(); }
 
 [^]                   { return YaLangTokenTypes.BAD_CHARACTER; }
 }
