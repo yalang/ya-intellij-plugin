@@ -20,9 +20,9 @@
     NONE_KEYWORD='لااحد'
     ASYNC_KEYWORD='غيرمتزامن'
     AS_KEYWORD='مثل'
+    AWAIT_KEYWORD='ترقب'
     WITH_KEYWORD='مع'
     NONLOCAL_KEYWORD='غيرمحلي'
-    AWAIT_KEYWORD='ترقب'
 
     AND_KEYWORD='و'
     ASSERT_KEYWORD='أكد'
