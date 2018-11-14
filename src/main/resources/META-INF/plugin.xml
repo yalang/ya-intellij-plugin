@@ -1,11 +1,11 @@
 <idea-plugin>
-    <id>org.yalang.yalang-plugin</id>
-    <name>YaLang</name>
-    <vendor email="team@yalang.org" url="http://www.yalang.org">YaLang</vendor>
+    <id>org.yalang.plugin</id>
+    <name>Ya (ي) Language</name>
+    <!--<vendor email="team@yalang.org" url="http://www.yalang.org">Ya Language</vendor>-->
 
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+    Ya (ي) programming language support.<br>
+    Ya (ي) programming language is an open source programming language where you can write python code in arabic language.
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
@@ -15,11 +15,11 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <fileTypeFactory implementation="org.yalang.YaLangFileTypeFactory"/>
-        <lang.parserDefinition language="YaLang" implementationClass="org.yalang.YaLangParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="YaLang" implementationClass="org.yalang.YaLangSyntaxHighlighterFactory"/>
-        <colorSettingsPage implementation="org.yalang.YaLangColorSettingsPage"/>
-        <annotator language="YaLang" implementationClass="org.yalang.YaLangAnnotator"/>
+        <fileTypeFactory implementation="org.yalang.YaFileTypeFactory"/>
+        <lang.parserDefinition language="Ya" implementationClass="org.yalang.YaParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Ya" implementationClass="org.yalang.YaSyntaxHighlighterFactory"/>
+        <colorSettingsPage implementation="org.yalang.YaColorSettingsPage"/>
+        <annotator language="Ya" implementationClass="org.yalang.YaAnnotator"/>
     </extensions>
 
     <actions>

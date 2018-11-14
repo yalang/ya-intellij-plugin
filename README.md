@@ -1,1 +1,1 @@
-### IntelliJ Plugin fo [YaLang](https://github.com/yalang/yalang)
+### IntelliJ Plugin fo [Ya Programming Language](https://github.com/yalang/ya)

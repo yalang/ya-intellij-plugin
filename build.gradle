@@ -4,11 +4,6 @@ buildscript {
     }
 }
 
-publishPlugin {
-    username intellijPublishUsername
-    password intellijPublishPassword
-}
-
 plugins {
     id 'org.jetbrains.intellij' version '0.3.12'
 }
@@ -17,11 +12,16 @@ apply plugin: 'idea'
 apply plugin: 'org.jetbrains.intellij'
 apply plugin: 'java'
 
+publishPlugin {
+    username intellijPublishUsername
+    password intellijPublishPassword
+}
+
 intellij {
     version '2018.2' //IntelliJ IDEA 2016.3 dependency; for a full list of IntelliJ IDEA releases please see https://www.jetbrains.com/intellij-repository/releases
     plugins 'coverage' //Bundled plugin dependencies
-    pluginName 'yalang'
+    pluginName 'ya-plugin'
 }
 
 group 'org.yalang'
-version '1.0-SNAPSHOT' // Plugin version
+version '0.0.1' // Update me!
