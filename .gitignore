@@ -107,3 +107,4 @@ Python.flex
 Example.flex
 Python.bnf
 *.backup
+gradle.properties
